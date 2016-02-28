@@ -1,7 +1,8 @@
-#ifndef INTERRUPCAO_H
-#define	INTERRUPCAO_H
+#ifndef INTERRUPCAO_EVENTOS_H
+#define	INTERRUPCAO_EVENTOS_H
 
-#include "SanUSB1.h"
+#include "sanusb/SanUSB1.h"
+#include "sanusb/Interrupcao.h"
 
 typedef struct {
     void (* funcao)(void *);

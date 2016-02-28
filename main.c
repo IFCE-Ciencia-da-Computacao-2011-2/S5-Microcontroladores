@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include "SanUSB1.h"
+#include "sanusb/SanUSB1.h"
 #include "semaforo/Semaforo.h"
 #include "semaforo/Sinal.h"
-#include "Interrupcao.h"
+#include "InterrupcaoEventos.h"
 
 void sinalizar(void * self) {
     Sinal * sinal = (Sinal *) self;
@@ -14,44 +14,51 @@ void sinalizar(void * self) {
 void Sinal_init(Sinal * sinal) {
     sinal->sinalizado = 0;
 
-    Semaforo3_init(&sinal->semaforo, pin_b7, pin_b6, pin_b5);
-    Semaforo2_init(&sinal->semaforoPedestre, pin_b4, pin_b3);
+    Semaforo3_init(&sinal->semaforo, pin_b3, pin_b4, pin_b5);
+    Semaforo2_init(&sinal->semaforoPedestre, pin_b6, pin_b7);
     
     sinal->sinalizar = &sinalizar;
+}
+
+void init();
+
+void main() {
+    Interrupcoes_init();
+    clock_int_4MHz();
+
+    init();
 }
 
 void rodarSemaforo(Sinal *sinal);
 void rodarSemaforoPedestre(Sinal *sinal);
 
-Sinal sinal;
-
-void main() {
-    //habilita_interrupcao(ext1);
-    Interrupcoes_init();
-    clock_int_4MHz();
+void init() {
+    Sinal sinal;
 
     Sinal_init(&sinal);
-    
-    sinal.semaforoPedestre.vermelho(&sinal.semaforoPedestre);
-    
+
     naInterrupcao(ext1, sinal.sinalizar, &sinal);
-    
+
+    sinal.semaforoPedestre.vermelho(&sinal.semaforoPedestre);
+
     while(1) {
         if(!entrada_pin_e3)
             Reset();
-        
-        rodarSemaforo(&sinal);
 
-        if (sinal.sinalizado)
+        rodarSemaforo(&sinal);
+        
+        if (sinal.sinalizado) {
             rodarSemaforoPedestre(&sinal);
-        else
+            sinal.sinalizado = false;
+        } else {
             tempo_ms(3000);
+        }
     }
 }
 
 void rodarSemaforo(Sinal *sinal) {
     Semaforo3 *semaforo = &sinal->semaforo;
-    
+
     semaforo->verde(semaforo);
     tempo_ms(2000);
 
@@ -71,8 +78,4 @@ void rodarSemaforoPedestre(Sinal *sinal) {
 
     semaforo->vermelho(semaforo);
     tempo_ms(1000);
-
-    // No fim, pois se alguém sinalizar durante o semáforo de pedestre
-    // não deve chamar
-    sinal->sinalizado = false;
 }
