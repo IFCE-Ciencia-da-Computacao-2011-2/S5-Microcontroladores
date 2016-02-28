@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "sanusb/SanUSB1.h"
 #include "Semaforo.h"
-//#include "SanUSB1.h"
 
 void Semaforo2_verde(void * self);
 void Semaforo2_vermelho(void * self);

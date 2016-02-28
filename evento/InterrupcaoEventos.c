@@ -1,29 +1,8 @@
-#ifndef INTERRUPCAO_EVENTOS_H
-#define	INTERRUPCAO_EVENTOS_H
+#include <stdio.h>
 
-#include "sanusb/SanUSB1.h"
-#include "sanusb/Interrupcao.h"
+#include "InterrupcaoEventos.h"
 
-typedef struct {
-    void (* funcao)(void *);
-    void * parametro;
-} Interrupcao;
-
-typedef struct {
-    Interrupcao b0;
-    Interrupcao b1;
-    Interrupcao b2;
-} Interrupcoes;
-
-typedef enum {
-    EXT0 = ext0,
-    EXT1 = ext1,
-    EXT2 = ext2
-} TipoInterrupcao;
-
-static const Interrupcoes interrupcoes;
-
-extern void Interrupcoes_init() {
+void Interrupcoes_init() {
     interrupcoes.b0.funcao = NULL;
     interrupcoes.b0.parametro = NULL;
     interrupcoes.b1.funcao = NULL;
@@ -79,5 +58,3 @@ extern void naInterrupcao(TipoInterrupcao tipo, void (* funcao)(void *), void * 
     interrupcao->funcao = funcao;
     interrupcao->parametro = parametro;
 }
-
-#endif

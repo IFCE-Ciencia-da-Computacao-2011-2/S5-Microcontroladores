@@ -10,5 +10,6 @@ typedef struct {
     void (* sinalizar)(void *);
 } Sinal;
 
+extern void Sinal_init(Sinal * sinal);
 #endif
 
