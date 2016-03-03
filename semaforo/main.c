@@ -19,19 +19,15 @@ void start() {
 
     naInterrupcao(ext1, sinal.sinalizar, &sinal);
 
-    sinal.semaforo.verde(&sinal.semaforo);
+    //sinal.semaforo.verde(&sinal.semaforo); //Faz dar erro na hora de gravar
     sinal.semaforoPedestre.vermelho(&sinal.semaforoPedestre);
 
     while(1) {
-        if(!entrada_pin_e3)
+        if (!entrada_pin_e3)
             Reset();
 
         sinal.semaforo.verde(&sinal.semaforo);
-        tempo_ms(1000);
-        tempo_ms(1000);
-        tempo_ms(1000);
-        tempo_ms(1000);
-        
+        tempo_ms(10000);
 
         if (sinal.sinalizado) {
             rodarSemaforo(&sinal);

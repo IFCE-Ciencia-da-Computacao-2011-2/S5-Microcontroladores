@@ -1,7 +1,7 @@
 #include <delays.h>
 
 #include "sanusb/SanUSB1.h"
-#include "sanusb/SanUSB48.h"
+//#include "sanusb/SanUSB48.h"
 
 unsigned int R=0x0fdf;
 unsigned char REG=0x0f, REGad=0xdf;
