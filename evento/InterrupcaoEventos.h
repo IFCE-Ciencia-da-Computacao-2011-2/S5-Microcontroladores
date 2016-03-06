@@ -23,7 +23,7 @@ typedef enum {
 
 static const Interrupcoes interrupcoes;
 
-extern void Interrupcoes_init();
+extern void Interrupcoes_init(void);
 
 extern void interrupcao();
 

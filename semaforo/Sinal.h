@@ -2,11 +2,14 @@
 #define	SINAL_H
 
 #include "semaforo/Semaforo.h"
+#include "display/Display.h"
+
+#include "sanusb/SanUSB1.h"
 
 typedef struct {
     Semaforo3 semaforo;
     Semaforo2 semaforoPedestre;
-    int sinalizado;
+    boolean sinalizado;
     void (* sinalizar)(void *);
 } Sinal;
 

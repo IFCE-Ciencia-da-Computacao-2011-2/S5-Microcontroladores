@@ -24,23 +24,23 @@ unsigned char desenhos[] = {
     0b10001110, // F
 };
 
-void Display_caractere(void * self, Caractere caractere);
+void Display7Seg_caractere(void * self, Caractere caractere);
 
-void Display_estado(void * self, boolean ligar);
-void Display_liga(void * self);
-void Display_desliga(void * self);
+void Display7Seg_estado(void * self, boolean ligar);
+void Display7Seg_liga(void * self);
+void Display7Seg_desliga(void * self);
 
-void Display_init(Display7Seg * display, DisplayTipo tipo, unsigned int controle) {
+void Display7Seg_init(Display7Seg * display, DisplayTipo tipo, unsigned int controle) {
     display->tipo = tipo;
     display->controle = controle;
     
-    display->caractere = &Display_caractere;
+    display->caractere = &Display7Seg_caractere;
 
-    display->liga    = &Display_liga;
-    display->desliga = &Display_desliga;
+    display->liga    = &Display7Seg_liga;
+    display->desliga = &Display7Seg_desliga;
 }
 
-void Display_caractere(void * self, Caractere caractere) {
+void Display7Seg_caractere(void * self, Caractere caractere) {
     Display7Seg * display = (Display7Seg *) self;
     unsigned char character = desenhos[caractere];
     boolean acender = false;
@@ -59,15 +59,15 @@ void Display_caractere(void * self, Caractere caractere) {
     }
 }
 
-void Display_liga(void * self) {
-    Display_estado(self, true);
+void Display7Seg_liga(void * self) {
+    Display7Seg_estado(self, true);
 }
 
-void Display_desliga(void * self) {
-    Display_estado(self, false);
+void Display7Seg_desliga(void * self) {
+    Display7Seg_estado(self, false);
 }
 
-void Display_estado(void * self, boolean ligar) {
+void Display7Seg_estado(void * self, boolean ligar) {
     Display7Seg * display = (Display7Seg *) self;
 
     if (display->tipo == CATODO_COMUM)

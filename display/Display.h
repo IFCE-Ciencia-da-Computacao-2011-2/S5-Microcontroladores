@@ -29,7 +29,7 @@ typedef struct {
     void (* desliga)(void *);
 } Display7Seg;
 
-void Display_init(Display7Seg * display, DisplayTipo tipo, unsigned int controle);
+void Display7Seg_init(Display7Seg * display, DisplayTipo tipo, unsigned int controle);
 
 #endif	/* DISPLAY_H */
 
