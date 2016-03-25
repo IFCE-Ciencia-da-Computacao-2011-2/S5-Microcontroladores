@@ -19,6 +19,12 @@ extern void interrupcao(void);
 #define ad_interrompeu        PIR1bits.ADIF
 #define serial_interrompeu    PIR1bits.RCIF
 
+/**
+ * Lê o primeiro caractere recebido que está no buffer de recepção RS-232.
+ * 
+ * Observações: Quando outro byte é recebido, ele é armazenado na próxima posição 
+ * livre do buffer de recepção, cuja capacidade é de 16 bytes.
+ */
 #define le_serial      getcUSART
 #define escreve_serial printf
 #define getchar        getcUSART
@@ -158,11 +164,11 @@ extern void sputc(unsigned char c);
 
 extern void sendrw(static char rom *ByteROM);
 extern void sendr(static char rom *ByteROM);
-extern void sendsw( char st[]);
-extern void sends(unsigned char st[]);
-extern void sendnum(unsigned int sannum);
+extern void sendsw( char string[]);
+extern void sends(unsigned char string[]);
+extern void sendnum(unsigned int numero);
 
-extern void SetaPWM1(int freqPWM, int duty);
-extern void SetaPWM2(int freqPWM, int duty);
+extern void SetaPWM1(int frequencia, int cicloDeTrabalho);
+extern void SetaPWM2(int frequencia, int cicloDeTrabalho);
 
 #endif

@@ -21,8 +21,29 @@ void portaA_entrada(void) { TRISA=0xff;}
 void portaB_entrada(void) { TRISB=0xff;}
 void portaC_entrada(void) { TRISC=0xff;}
 
+/**
+ * Habilita o temporizador cão-de-guarda contra travamento do programa.
+ * 
+ * Observações: O wdt inicia como padrão sempre desabilitado. 
+ * Caso seja habilitado na função principal main(), 
+ * este temporizador está configurado para contar aproximadamente 
+ * um intervalo de tempo de 16 segundos.
+ * 
+ * Ao final deste intervalo, se a flag limpa_wdt() não for zerada,
+ * ele provoca um reset do microcontrolador e conseqüentemente a reinicialização 
+ * do programa
+ */
 void habilita_wdt(void) {WDTCONbits.SWDTEN = 1;}
 
+/**
+ * Limpa a flag do wdt
+ * 
+ * Observações: Caso o wdt seja habilitado, a flag deve ser limpa em no 
+ * máximo 16 segundos para que não haja reinicialização do programa.
+ * 
+ * Geralmente esta função é colocada dentro do laço infinito while(1) da 
+ * função principal main().
+ */
 void limpaflag_wdt(void) {
     ClrWdt();
 }
@@ -30,9 +51,14 @@ void limpaflag_wdt(void) {
 /*********************************
  * Pinos
  *********************************/
-void saida_pino(unsigned int pino, short int alto);
+void saida_pino(unsigned int pino, short int nivel);
 
-
+/**
+ * Altera o nivel lógico para alto (+5V) em uma saída digital.
+ *
+ * @param pino Saída digital que irá para nivel lógico alto.
+ *             Pode ser colocado também o nome de toda a porta (porta, portb, portc).
+ */
 void nivel_alto(unsigned int pino) {
     //INTCON2bits.RBPU=0; //Pull-ups habilitados na porta b
     switch (pino) {
@@ -43,6 +69,12 @@ void nivel_alto(unsigned int pino) {
     }
 }
 
+/**
+ * Altera o nivel lógico para baixo (0V) em uma saída digital.
+ * 
+ * @param pino Saída digital que irá para nivel lógico baixo.
+ *             Pode ser colocado também o nome de toda a porta (porta, portb, portc).
+ */
 void nivel_baixo(unsigned int pino) {
     //INTCON2bits.RBPU=1; //Pull-ups desabilitados
     switch (pino) {
@@ -53,6 +85,12 @@ void nivel_baixo(unsigned int pino) {
     }
 }
 
+/**
+ * Altera o nivel lógico para seu inverso em uma saída digital
+ * 
+ * @param pino Pino a ser invertido
+ * @param alto
+ */
 void inverte_saida(unsigned int pino) {
     short int valor = 0;
     boolean hasPino = true;
@@ -96,57 +134,73 @@ void inverte_saida(unsigned int pino) {
         saida_pino(pino, valor);
 }
 
-void saida_pino(unsigned int pino, short int alto) {
+/**
+ * Altera a saída de um pino para nível alto (1) ou nível baixo (0)
+ * 
+ * @param pino Pino a ter sua saída alterada
+ * @param nivel Nível de saída
+ */
+void saida_pino(unsigned int pino, short int nivel) {
     switch(pino) {
-        case pin_a0: TRISAbits.TRISA0 = 0; PORTAbits.RA0 = alto; break;
-        case pin_a1: TRISAbits.TRISA1 = 0; PORTAbits.RA1 = alto; break;
-        case pin_a2: TRISAbits.TRISA2 = 0; PORTAbits.RA2 = alto; break;
-        case pin_a3: TRISAbits.TRISA3 = 0; PORTAbits.RA3 = alto; break;
-        case pin_a4: TRISAbits.TRISA4 = 0; PORTAbits.RA4 = alto; break;
-        case pin_a5: TRISAbits.TRISA5 = 0; PORTAbits.RA5 = alto; break;
+        case pin_a0: TRISAbits.TRISA0 = 0; PORTAbits.RA0 = nivel; break;
+        case pin_a1: TRISAbits.TRISA1 = 0; PORTAbits.RA1 = nivel; break;
+        case pin_a2: TRISAbits.TRISA2 = 0; PORTAbits.RA2 = nivel; break;
+        case pin_a3: TRISAbits.TRISA3 = 0; PORTAbits.RA3 = nivel; break;
+        case pin_a4: TRISAbits.TRISA4 = 0; PORTAbits.RA4 = nivel; break;
+        case pin_a5: TRISAbits.TRISA5 = 0; PORTAbits.RA5 = nivel; break;
 
-        case pin_b0: TRISBbits.TRISB0 = 0; PORTBbits.RB0 = alto; break;
-        case pin_b1: TRISBbits.TRISB1 = 0; PORTBbits.RB1 = alto; break;
-        case pin_b2: TRISBbits.TRISB2 = 0; PORTBbits.RB2 = alto; break;
-        case pin_b3: TRISBbits.TRISB3 = 0; PORTBbits.RB3 = alto; break;
-        case pin_b4: TRISBbits.TRISB4 = 0; PORTBbits.RB4 = alto; break;
-        case pin_b5: TRISBbits.TRISB5 = 0; PORTBbits.RB5 = alto; break;
-        case pin_b6: TRISBbits.TRISB6 = 0; PORTBbits.RB6 = alto; break;
-        case pin_b7: TRISBbits.TRISB7 = 0; PORTBbits.RB7 = alto; break;
+        case pin_b0: TRISBbits.TRISB0 = 0; PORTBbits.RB0 = nivel; break;
+        case pin_b1: TRISBbits.TRISB1 = 0; PORTBbits.RB1 = nivel; break;
+        case pin_b2: TRISBbits.TRISB2 = 0; PORTBbits.RB2 = nivel; break;
+        case pin_b3: TRISBbits.TRISB3 = 0; PORTBbits.RB3 = nivel; break;
+        case pin_b4: TRISBbits.TRISB4 = 0; PORTBbits.RB4 = nivel; break;
+        case pin_b5: TRISBbits.TRISB5 = 0; PORTBbits.RB5 = nivel; break;
+        case pin_b6: TRISBbits.TRISB6 = 0; PORTBbits.RB6 = nivel; break;
+        case pin_b7: TRISBbits.TRISB7 = 0; PORTBbits.RB7 = nivel; break;
 
-        case pin_c0: TRISCbits.TRISC0 = 0; PORTCbits.RC0 = alto; break;
-        case pin_c1: TRISCbits.TRISC1 = 0; PORTCbits.RC1 = alto; break;
-        case pin_c2: TRISCbits.TRISC2 = 0; PORTCbits.RC2 = alto; break;
-        case pin_c6: TRISCbits.TRISC6 = 0; PORTCbits.RC6 = alto; break;
-        case pin_c7: TRISCbits.TRISC7 = 0; PORTCbits.RC7 = alto; break;
+        case pin_c0: TRISCbits.TRISC0 = 0; PORTCbits.RC0 = nivel; break;
+        case pin_c1: TRISCbits.TRISC1 = 0; PORTCbits.RC1 = nivel; break;
+        case pin_c2: TRISCbits.TRISC2 = 0; PORTCbits.RC2 = nivel; break;
+        case pin_c6: TRISCbits.TRISC6 = 0; PORTCbits.RC6 = nivel; break;
+        case pin_c7: TRISCbits.TRISC7 = 0; PORTCbits.RC7 = nivel; break;
 
-        case pin_d0: TRISDbits.TRISD0 = 0; PORTDbits.RD0 = alto; break;
-        case pin_d1: TRISDbits.TRISD1 = 0; PORTDbits.RD1 = alto; break;
-        case pin_d2: TRISDbits.TRISD2 = 0; PORTDbits.RD2 = alto; break;
-        case pin_d3: TRISDbits.TRISD3 = 0; PORTDbits.RD3 = alto; break;
-        case pin_d4: TRISDbits.TRISD4 = 0; PORTDbits.RD4 = alto; break;
-        case pin_d5: TRISDbits.TRISD5 = 0; PORTDbits.RD5 = alto; break;
-        case pin_d6: TRISDbits.TRISD6 = 0; PORTDbits.RD6 = alto; break;
-        case pin_d7: TRISDbits.TRISD7 = 0; PORTDbits.RD7 = alto; break;
+        case pin_d0: TRISDbits.TRISD0 = 0; PORTDbits.RD0 = nivel; break;
+        case pin_d1: TRISDbits.TRISD1 = 0; PORTDbits.RD1 = nivel; break;
+        case pin_d2: TRISDbits.TRISD2 = 0; PORTDbits.RD2 = nivel; break;
+        case pin_d3: TRISDbits.TRISD3 = 0; PORTDbits.RD3 = nivel; break;
+        case pin_d4: TRISDbits.TRISD4 = 0; PORTDbits.RD4 = nivel; break;
+        case pin_d5: TRISDbits.TRISD5 = 0; PORTDbits.RD5 = nivel; break;
+        case pin_d6: TRISDbits.TRISD6 = 0; PORTDbits.RD6 = nivel; break;
+        case pin_d7: TRISDbits.TRISD7 = 0; PORTDbits.RD7 = nivel; break;
     }
 }
 
 /*********************************
  * Tempo
  *********************************/
-void tempo_us(unsigned int i) {
-    unsigned int k;  
+/**
+ * Tempo em múltiplos de 1µs (microssegundos)
+ * 
+ * @param tempo Tempo de espera
+ */
+void tempo_us(unsigned int tempo) {
+    unsigned int k;
 
-    for(k=0;k<i;k++)
+    for(k=0;k<tempo;k++)
         Delay1TCY(); //12*i para 48 MHz
 }
 
-void tempo_ms(unsigned int i) {
+/**
+ * Tempo em múltiplos de 1ms (milissegundos)
+ * 
+ * @param tempo Tempo de tempo que multiplica 1 us
+ */
+void tempo_ms(unsigned int tempo) {
     unsigned int k; 
     EEADR  = REG+0B11111100+tmp;
     EECON1 = REG+EEADR & 0B00001011;
     while(EEDATA);
-    for (k=0;k<i;k++)
+    for (k=0;k<tempo;k++)
         //12*i para 48 MHz
         Delay1KTCYx(1);
 }
@@ -154,14 +208,27 @@ void tempo_ms(unsigned int i) {
 /*********************************
  * Pinos - Digital
  *********************************/
-
+/**
+ * Habilita entradas analógicas para conversão AD.
+ * 
+ * @param canal Número do canal analógico que irá ser lido.
+ *              Este dado habilita um ou vários canais AD e pode ser AN0, AN0_a_AN1, AN0_a_AN2, AN0_a_AN3, AN0_a_AN4, AN0_a_AN8, AN0_a_AN9, AN0_a_AN10, AN0_a_AN11, ou AN0_a_AN12.
+ */
 void habilita_canal_AD(char canal) {
     ADCON1 = REG+canal;
     ADCON2 = REG+0b00000111; //AD clock interno RC
 }
 
-int le_AD8bits(char conv) {
-    switch(conv) {
+/**
+ * Leitura de uma entrada analógica com 8 bits de resolução
+ * 
+ * @param canal Número do canal analógico que irá ser lido
+ *              Valores válidos: 0, 1, 2, 3, 4, 8, 9, 10, 11 ou 12
+ * 
+ * @return Valor da conversão A/D da entrada analógica com resolução de 8 bits.
+ */
+int le_AD8bits(char canal) {
+    switch(canal) {
         case 0:  ADCON0 =0B00000001; break;
         case 1:  ADCON0 =0B00000101; break;
         case 2:  ADCON0 =0B00001001; break;
@@ -181,8 +248,16 @@ int le_AD8bits(char conv) {
     return ADRESH; //desconsidera os 2 bits menos significativos no ADRESL
 }
 
-unsigned int le_AD10bits(char conv) {
-    switch(conv) {
+/**
+ * Leitura de uma entrada analógica com 10 bits de resolução
+ *
+ * @param canal Número do canal analógico que irá ser lido
+ *              Pode ser 0, 1, 2, 3, 4, 8, 9, 10, 11 ou 12
+ *
+ * @return Valor da conversão A/D da entrada analógica com resolução de 10 bits.
+ */
+unsigned int le_AD10bits(char canal) {
+    switch(canal) {
         case 0:  ADCON0 =0B00000001; break;
         case 1:  ADCON0 =0B00000101; break;
         case 2:  ADCON0 =0B00001001; break;
@@ -207,7 +282,7 @@ unsigned int le_AD10bits(char conv) {
 /**
  * Timer 0,1 ou 3
  */
-void multiplica_timer16bits(char timer,unsigned int multiplica) {
+void multiplica_timer16bits(char timer, unsigned int multiplica) {
     switch(timer) {
         case 0:
             //T0CON = TMR0ON , T08BIT(0=16bits, 1=8bits), T0CS , T0SE , PSA , T0PS2 T0PS1 T0PS0
@@ -242,6 +317,12 @@ void multiplica_timer16bits(char timer,unsigned int multiplica) {
     }
 }
 
+/**
+ * Define o timer e o tempo que será contado em µs até estourar
+ * 
+ * @param timer Timer de 16 bits (0,1ou 3)
+ * @param conta_us tempo que será contado em us (valor máximo 65536)
+ */
 void tempo_timer16bits(char timer, unsigned int conta_us) {
     unsigned int carga=65536-conta_us;
     unsigned int TMRH =(carga/256);
@@ -271,7 +352,10 @@ void timer0_ms(unsigned int cx) {
  * EEPROM
  *********************************/
 /**
- * 8 bits
+ * Escrita de um byte na memória EEPROM interna de 256 bytes do microcontrolador.
+ * 
+ * @param endereco Endereço da memória entre 0 a 255
+ * @param dado valor entra 0 a 255
  */
 void escreve_eeprom(unsigned char endereco, unsigned char dado) {
     EECON1bits.EEPGD = 0;
@@ -285,18 +369,41 @@ void escreve_eeprom(unsigned char endereco, unsigned char dado) {
     while(EECON1bits.WR);
 }
 
+/**
+ * Leitura de um byte da memória EEPROM interna de 256 bytes do microcontrolador
+ * 
+ * Observações: O resultado da leitura é armazenado no byte EEDATA.
+ *
+ * @param endereco Endereço da memória entre 0 a 255
+ * 
+ * @return Byte da memória lido
+ */
 unsigned char le_eeprom(unsigned char endereco) {
     EEADR = endereco;
     EECON1bits.WREN = 0;
     EECON1bits.EEPGD = 0;
     EECON1bits.CFGS = 0;
     EECON1bits.RD = tmp;
+
     return EEDATA;
 }
 
 /*********************************
  * Clock
  *********************************/
+/**
+ * Habilita o clock para a processador do oscilador interno de 4MHz.
+ * 
+ * Observações: O clock padrão proveniente do sistema USB interno do PIC é de
+ * 48MHz gerado a partir do cristal de 20 MHz.
+ * 
+ * Isto é possível através de um multiplicador interno de clock do PIC.
+ * A função clock_int_4MHz() habilita, para o processador do microcontrolador,
+ * o oscilador RC interno em 4 MHz que adéqua o período de incremento dos 
+ * temporizadores em 1us. 
+ * 
+ * É aconselhável que seja a primeira declaração da função principal main().
+ */
 void clock_int_4MHz(void) {
     _asm
         MOVLW 0b11111101
@@ -322,7 +429,15 @@ void clock_int_4MHz(void) {
  * Serial
  *********************************/
 /** 
- * Modo 16 bits(bits BRG16=1 e BRGH=1)
+ * Configura a taxa de transmissão/recepção (baud rate) da porta RS-232
+ * 
+ * @param taxa Taxa de transmissão/recepção em bits por segundo (bps)
+ * 
+ * Observações: O usuário deve obrigatoriamente configurar taxa_rs232()
+ * da comunicação assíncrona antes de utilizar as funções 
+ * le_serial e escreve_serial.
+ * 
+ * As taxas programáveis são 1200bps, 2400bps, 9600bps, 19200bps.
  */
 void taxa_serial(unsigned long taxa) {
     unsigned long baud_sanusb;
@@ -359,6 +474,11 @@ void sputc(unsigned char c) {
 /*********************************
  * Send ?
  *********************************/
+/**
+ * Transmite pela serial strings ou caracteres armazenados no ROM (memória flash).
+ *
+ * @param ByteROM O dado a ser transmitido deve ser de 8 bits do tipo char
+ */
 void sendrw(static char rom *ByteROM) {
     unsigned char tempsw;
 
@@ -377,6 +497,11 @@ void sendr(static char rom *ByteROM){
     }
 }
 
+/**
+ * Transmite caracteres pela serial UART alocados na RAM.
+ * 
+ * @param string O dado a ser transmitido deve ser de 8 bits do tipo char.
+ */
 void sendsw(char string[]) {
     for(k=0;string[k]!='\0';k++)
         swputc(string[k]);
@@ -386,7 +511,11 @@ void sends(unsigned char string[]) {
     for(k=0;string[k]!='\0';k++)
         sputc(string[k]);
 }
-
+/**
+ * Transmite números de variáveis pela serial UART
+ * 
+ * @param numero Dado a ser transmitido deve ser de 8 bits do tipo char
+ */
 void sendnum(unsigned int numero) {
     if(numero > 9999)
         swputc(((numero / 10000) % 10)+REG+0x30);
