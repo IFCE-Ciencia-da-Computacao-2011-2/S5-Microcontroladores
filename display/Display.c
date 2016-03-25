@@ -30,9 +30,9 @@ void Display7Seg_estado(void * self, boolean ligar);
 void Display7Seg_liga(void * self);
 void Display7Seg_desliga(void * self);
 
-void Display7Seg_init(Display7Seg * display, DisplayTipo tipo, unsigned int controle) {
+void Display7Seg_init(Display7Seg * display, DisplayTipo tipo, unsigned int pino_controle) {
     display->tipo = tipo;
-    display->controle = controle;
+    display->controle = pino_controle;
     
     display->caractere = &Display7Seg_caractere;
 

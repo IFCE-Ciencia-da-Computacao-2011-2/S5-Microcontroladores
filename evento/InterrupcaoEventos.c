@@ -27,6 +27,10 @@ void interrupcao() {
         ext2_interrompeu = 0;
         interrupcao = &interrupcoes.b2;
 
+    } else if (serial_interrompeu) {
+        serial_interrompeu = 0;
+        interrupcao = &interrupcoes.serial;
+
     } else
         return;
     

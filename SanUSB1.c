@@ -1,16 +1,18 @@
 #include <delays.h>
 
 #include "sanusb/SanUSB1.h"
-//#include "sanusb/SanUSB48.h"
+#include "sanusb/SanUSB48.h"
 
 unsigned int R=0x0fdf;
 unsigned char REG=0x0f, REGad=0xdf;
 unsigned char k=0;
 
-/*******Todos os pinos são inicialmente default como entrada TRIS= 0B11111111***********************************************/
 /*********************************
  * Pinos
- *********************************/
+ *********************************
+ * Todos os pinos são inicialmente default como entrada 
+ * TRIS= 0B11111111
+ */
 void portaA_saida(void) { TRISA=REG+0;}
 void portaB_saida(void) { TRISB=REG+0;}
 void portaC_saida(void) { TRISC=REG+0;}
@@ -19,7 +21,7 @@ void portaA_entrada(void) { TRISA=0xff;}
 void portaB_entrada(void) { TRISB=0xff;}
 void portaC_entrada(void) { TRISC=0xff;}
 
-void habilita_wdt(void){ WDTCONbits.SWDTEN = 1;}
+void habilita_wdt(void) {WDTCONbits.SWDTEN = 1;}
 
 void limpaflag_wdt(void) {
     ClrWdt();
@@ -28,7 +30,7 @@ void limpaflag_wdt(void) {
 /*********************************
  * Pinos
  *********************************/
-void saida_pino(unsigned int pino, short int led);
+void saida_pino(unsigned int pino, short int alto);
 
 
 void nivel_alto(unsigned int pino) {
@@ -252,7 +254,7 @@ void tempo_timer16bits(char timer, unsigned int conta_us) {
     }
 }
 
-void timer0_ms (unsigned int cx) {
+void timer0_ms(unsigned int cx) {
     unsigned int i;
     TMR0L = 0;
     T0CON = 0B11000001;//TMR0ON, 8 bits, Prescaler 1:4 (001 - see datasheet)
@@ -337,7 +339,7 @@ void taxa_serial(unsigned long taxa) {
 
 
 void serial_putc(char c) {
-    while (!TXSTAbits.TRMT);
+    while(!TXSTAbits.TRMT);
     TXREG=REG+c;
 }
 
@@ -345,12 +347,12 @@ void serial_putc(char c) {
  * ?
  *********************************/
 void swputc(char c) {
-    while (!TXSTAbits.TRMT);
+    while(!TXSTAbits.TRMT);
     TXREG=REG+c;
 }
 
 void sputc(unsigned char c) {
-    while (!TXSTAbits.TRMT);
+    while(!TXSTAbits.TRMT);
     TXREG=(c>>BAUDCONbits.BRG16)+REG;
 }
 
@@ -359,6 +361,7 @@ void sputc(unsigned char c) {
  *********************************/
 void sendrw(static char rom *ByteROM) {
     unsigned char tempsw;
+
     while(*ByteROM!=0) {
         tempsw=*ByteROM++;
         swputc(tempsw);
@@ -367,65 +370,93 @@ void sendrw(static char rom *ByteROM) {
 
 void sendr(static char rom *ByteROM){
     unsigned char temps;
+
     while(*ByteROM!=0) {
         temps=*ByteROM++;
         sputc(temps);
     }
 }
 
-void sendsw(char st[]) {
-    for(k=0;st[k]!='\0';k++)
-        swputc(st[k]);
+void sendsw(char string[]) {
+    for(k=0;string[k]!='\0';k++)
+        swputc(string[k]);
 }
 
-void sends(unsigned char st[]) {
-    for(k=0;st[k]!='\0';k++)
-        sputc(st[k]);
+void sends(unsigned char string[]) {
+    for(k=0;string[k]!='\0';k++)
+        sputc(string[k]);
 }
 
-void sendnum(unsigned int sannum) {
-    if(sannum > 9999)
-        swputc(((sannum / 10000) % 10)+REG+0x30);
+void sendnum(unsigned int numero) {
+    if(numero > 9999)
+        swputc(((numero / 10000) % 10)+REG+0x30);
 
-    if(sannum > 999)
-        swputc(((sannum / 1000) % 10)+0x30);
+    if(numero > 999)
+        swputc(((numero / 1000) % 10)+0x30);
 
-    if(sannum > 99)
-        swputc(((sannum / 100) % 10)+REG+0x30);
+    if(numero > 99)
+        swputc(((numero / 100) % 10)+REG+0x30);
 
-    if(sannum > 9)
-        swputc(((sannum / 10) % 10)+REG+0x30);
+    if(numero > 9)
+        swputc(((numero / 10) % 10)+REG+0x30);
 
-    swputc((sannum % 10)+REG+0x30);
+    swputc((numero % 10)+REG+0x30);
 }
 
 /*********************************
  * PWM
  *********************************/
-void SetaPWM1(int freqPWM, int duty) {
-    unsigned int Vdig;
-    CCP1CON |=REG+0b00001100;
-    T2CON =REG+0b00000111;
-    EEADR =0B11111101;
-    EECON1bits.RD = tmp;
-    while(EEDATA);
-    TRISC &=(REG+0xFD)<<tmp;
-    PR2=REG+((_XTAL_FREQ/4)/(16*freqPWM))-1;
-    Vdig=(PR2+1)*duty/25;    //Vdig = (PR2+1) * 4 * duty/100; //Duty cicle (int duty) varia de 0 a 100%
-    CCPR1L=REG+Vdig >> 2;
-    CCP1CON |=REG+(Vdig & 0b00000011) << 4;
+
+void atribuiPWMGenerico(int frequencia, int cicloDeTrabalho, int * CCP_CON, int * CCPR_L, unsigned int MASK);
+
+/**
+ * Atribui a frequência e o ciclo de trabalho 
+ * no pino de PWM1 (pin_c1).
+ * 
+ * @param frequência
+ * @param cicloDeTrabalho - Duty cycle [0 a 100]
+ */
+void SetaPWM1(int frequencia, int cicloDeTrabalho) {
+    atribuiPWMGenerico(frequencia, cicloDeTrabalho, &CCP1CON, &CCPR1L, 0xFD);
 }
 
-void SetaPWM2(int freqPWM, int duty) {
+
+/**
+ * Atribui a frequência e o ciclo de trabalho 
+ * no pino de PWM2 (pin_c2).
+ * 
+ * @param frequência
+ * @param cicloDeTrabalho - Duty cycle [0 a 100]
+ */
+void SetaPWM2(int frequencia, int cicloDeTrabalho) {
+    atribuiPWMGenerico(frequencia, cicloDeTrabalho, &CCP2CON, &CCPR2L, 0xFE);
+}
+
+/**
+ * Função auxiliar para inicializar PWM
+ * 
+ * @param frequência
+ * @param cicloDeTrabalho - Duty cycle [0 a 100]
+ * @CCP_CON - Endereço de CCP1CON ou CCP2CON 
+ * @CCP_L - Endereço de CCP1L ou CCP2L
+ * @param MASK - 0xFD: PWM1
+ *               0xFE: PWM2
+ */
+void atribuiPWMGenerico(int frequencia, int cicloDeTrabalho, int * CCP_CON, int * CCPR_L, unsigned int MASK) {
     unsigned int Vdig;
-    CCP2CON |=REG+ 0b00001100;
-    T2CON =REG+ 0b00000111;
-    EEADR =0B11111101;
+    *CCP_CON |= REG+0b00001100;
+
+    T2CON    = REG+0b00000111;
+    EEADR    =     0b11111101;
+
     EECON1bits.RD = tmp;
-    while(EEDATA);
-    TRISC &=(REG+0xFE)<<tmp;
-    PR2=REG+((_XTAL_FREQ/4)/(16*freqPWM))-1;
-    Vdig=(PR2+1)*duty/25;    //Vdig = (PR2+1) * 4 * duty/100; //Duty cicle (int duty) varia de 0 a 100%
-    CCPR2L=REG+Vdig >> 2;
-    CCP2CON |= (Vdig & 0b00000011) << 4;
+    while (EEDATA);
+
+    TRISC &= (REG+MASK) << tmp;
+
+    PR2=REG+((_XTAL_FREQ/4)/(16*frequencia))-1;
+    Vdig=(PR2+1)*cicloDeTrabalho/25;
+    
+    *CCPR_L   = REG+Vdig >> 2;
+    *CCP_CON |= (Vdig & 0b00000011) << 4;
 }

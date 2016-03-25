@@ -2,11 +2,11 @@
 
 #include "evento/InterrupcaoEventos.h"
 #include "sanusb/SanUSB1.h"
-#include "semaforo/main.h"
+#include "pwm/main.h"
 
 void main() {
     Interrupcoes_init();
     clock_int_4MHz();
 
-    start();
+    start_pwm();
 }

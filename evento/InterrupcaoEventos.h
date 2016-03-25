@@ -13,12 +13,14 @@ typedef struct {
     Interrupcao b0;
     Interrupcao b1;
     Interrupcao b2;
+    Interrupcao serial;
 } Interrupcoes;
 
 typedef enum {
     EXT0 = ext0,
     EXT1 = ext1,
-    EXT2 = ext2
+    EXT2 = ext2,
+    SERIAL = recep_serial
 } TipoInterrupcao;
 
 static const Interrupcoes interrupcoes;
