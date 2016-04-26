@@ -144,8 +144,8 @@ extern void tempo_ms(unsigned int i);
 #define AN0_a_AN1_VREF_POS_NEG 0x3D    //(VREF+ -> AN3 e VREF- -> AN2)
 
 extern void habilita_canal_AD(char canal);
-extern int le_AD8bits (char conv);
-extern unsigned int le_AD10bits (char conv);
+extern int le_AD8bits(short int conv);
+extern unsigned int le_AD10bits(short int conv);
 
 extern void multiplica_timer16bits(char timer,unsigned int multiplica);
 extern void tempo_timer16bits(char timer,unsigned int conta_us);
@@ -164,7 +164,7 @@ extern void sputc(unsigned char c);
 
 extern void sendrw(static char rom *ByteROM);
 extern void sendr(static char rom *ByteROM);
-extern void sendsw( char string[]);
+extern void sendsw(char string[]);
 extern void sends(unsigned char string[]);
 extern void sendnum(unsigned int numero);
 

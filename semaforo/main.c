@@ -32,7 +32,7 @@ void start() {
 
     naInterrupcao(EXT1, sinal.sinalizar, &sinal);
 
-    sinal.semaforo.verde(&sinal.semaforo); //Faz dar erro na hora de gravar
+    sinal.semaforo.verde(&sinal.semaforo);
     sinal.semaforoPedestre.vermelho(&sinal.semaforoPedestre);
 
     while(1) {
@@ -40,7 +40,7 @@ void start() {
             Reset();
 
         sinal.semaforo.verde(&sinal.semaforo);
-        tempo_ms(10000);
+        tempo_ms(1000);
 
         if (sinal.sinalizado) {
             rodarSemaforo(&sinal);
@@ -71,7 +71,7 @@ void rodarSemaforoPedestre(Sinal * sinal, Display2Timer * timer) {
     tempo_ms(500);
 
     semaforo->verde(semaforo);
-    timer->intervaloDecrescente(timer, 10, 0, 250);
+    timer->intervaloDecrescente(timer, 10, 0, 500);
     tempo_ms(100);
     desliga(&timer->dezena);
     desliga(&timer->unidade);

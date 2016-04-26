@@ -227,7 +227,7 @@ void habilita_canal_AD(char canal) {
  * 
  * @return Valor da conversão A/D da entrada analógica com resolução de 8 bits.
  */
-int le_AD8bits(char canal) {
+int le_AD8bits(short int canal) {
     switch(canal) {
         case 0:  ADCON0 =0B00000001; break;
         case 1:  ADCON0 =0B00000101; break;
@@ -256,7 +256,7 @@ int le_AD8bits(char canal) {
  *
  * @return Valor da conversão A/D da entrada analógica com resolução de 10 bits.
  */
-unsigned int le_AD10bits(char canal) {
+unsigned int le_AD10bits(short int canal) {
     switch(canal) {
         case 0:  ADCON0 =0B00000001; break;
         case 1:  ADCON0 =0B00000101; break;
@@ -339,7 +339,7 @@ void timer0_ms(unsigned int cx) {
     unsigned int i;
     TMR0L = 0;
     T0CON = 0B11000001;//TMR0ON, 8 bits, Prescaler 1:4 (001 - see datasheet)
-                       //T0CON BITS = TMR0ON , T08BIT(0=16bits OR 1=8bits), T0CS , T0SE , PSA , T0PS2 T0PS1 T0PS0.
+                       //T0CON BITS = TMR0ON, T08BIT(0=16bits OR 1=8bits), T0CS , T0SE , PSA , T0PS2 T0PS1 T0PS0.
                        //Defaull 1 in all bits.
     for (i = 0; i < cx; i++) {
         TMR0L = TMR0L + 6; // load time before plus 250us x 4 (prescaler 001) = 1000us = 1ms into TMR0 so that it rolls over (for 4MHz oscilator clock)
