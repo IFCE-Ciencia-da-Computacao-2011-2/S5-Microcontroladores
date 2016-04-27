@@ -175,6 +175,42 @@ void saida_pino(unsigned int pino, short int nivel) {
     }
 }
 
+boolean entrada_pino(unsigned int pino) {
+    switch(pino) {
+        case pin_a0: return entrada_pin_a0;
+        case pin_a1: return entrada_pin_a1;
+        case pin_a2: return entrada_pin_a2;
+        case pin_a3: return entrada_pin_a3;
+        case pin_a4: return entrada_pin_a4;
+        case pin_a5: return entrada_pin_a5;
+
+        case pin_b0: return entrada_pin_b0;
+        case pin_b1: return entrada_pin_b1;
+        case pin_b2: return entrada_pin_b2;
+        case pin_b3: return entrada_pin_b3;
+        case pin_b4: return entrada_pin_b4;
+        case pin_b5: return entrada_pin_b5;
+        case pin_b6: return entrada_pin_b6;
+        case pin_b7: return entrada_pin_b7;
+
+        case pin_c0: return entrada_pin_c0;
+        case pin_c1: return entrada_pin_c1;
+        case pin_c2: return entrada_pin_c2;
+        case pin_c6: return entrada_pin_c6;
+        case pin_c7: return entrada_pin_c7;
+
+        case pin_d0: return entrada_pin_d0;
+        case pin_d1: return entrada_pin_d1;
+        case pin_d2: return entrada_pin_d2;
+        case pin_d3: return entrada_pin_d3;
+        case pin_d4: return entrada_pin_d4;
+        case pin_d5: return entrada_pin_d5;
+        case pin_d6: return entrada_pin_d6;
+        case pin_d7: return entrada_pin_d7;
+        
+        case port_e3: return entrada_pin_e3;
+    }
+}
 /*********************************
  * Tempo
  *********************************/
@@ -206,7 +242,7 @@ void tempo_ms(unsigned int tempo) {
 }
 
 /*********************************
- * Pinos - Digital
+ * Pinos - Analógico
  *********************************/
 /**
  * Habilita entradas analógicas para conversão AD.
@@ -433,7 +469,7 @@ void clock_int_4MHz(void) {
  * 
  * @param taxa Taxa de transmissão/recepção em bits por segundo (bps)
  * 
- * Observações: O usuário deve obrigatoriamente configurar taxa_rs232()
+ * Observações: O usuário deve obrigatoriamente configurar taxa_serial()
  * da comunicação assíncrona antes de utilizar as funções 
  * le_serial e escreve_serial.
  * 

@@ -126,6 +126,7 @@ extern void nivel_alto(unsigned int pino);
 extern void nivel_baixo(unsigned int pino);
 extern void inverte_saida(unsigned int pino);
 extern void saida_pino(unsigned int pino, short int alto);
+boolean entrada_pino(unsigned int pino);
 
 extern void tempo_us(unsigned int i);
 extern void tempo_ms(unsigned int i);
